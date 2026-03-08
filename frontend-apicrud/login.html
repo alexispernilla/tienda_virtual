@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login - Tienda Sistema</title>
+
+    <!-- Custom fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            border-radius: 5px;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .role-info {
+            background-color: #f0f4ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #667eea;
+        }
+
+        .role-info ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .role-info li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🛒 Tienda</h1>
+            <p>Sistema de Gestión de Inventario</p>
+        </div>
+
+        <form id="loginForm">
+            <div id="alertContainer"></div>
+
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">Iniciar Sesión</button>
+
+            <div class="loading" id="loading">
+                <div class="spinner-border text-primary" role="status" style="width: 20px; height: 20px; margin: 10px auto;">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+
+            <div class="register-link">
+                ¿No tienes cuenta? <a href="register.html">Regístrate aquí</a>
+            </div>
+        </form>
+
+        <div class="role-info">
+            <strong>Credenciales de prueba:</strong>
+            <ul>
+                <li><strong>Admin:</strong> admin / admin12345</li>
+                <li><strong>Vendedor:</strong> vendedor / vendedor123</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = "http://localhost:3000/api";
+
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const usuario = document.getElementById("usuario").value.trim();
+            const contrasena = document.getElementById("contrasena").value;
+            const alertContainer = document.getElementById("alertContainer");
+            const loginBtn = document.getElementById("loginBtn");
+            const loading = document.getElementById("loading");
+
+            // Validación básica
+            if (!usuario || !contrasena) {
+                showAlert("Por favor completa todos los campos", "error");
+                return;
+            }
+
+            try {
+                loginBtn.disabled = true;
+                loading.style.display = "block";
+
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ usuario, contrasena }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Guardar datos del usuario en localStorage
+                    localStorage.setItem("user", JSON.stringify({
+                        id: data.user.id,
+                        usuario: data.user.usuario,
+                        rol: data.user.rol,
+                    }));
+
+                    showAlert("¡Login exitoso! Redirigiendo...", "success");
+
+                    // Redirigir al dashboard después de 1 segundo
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1000);
+                } else {
+                    showAlert(data.message || "Credenciales incorrectas", "error");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                showAlert("Error de conexión. Verifica que el servidor esté activo", "error");
+            } finally {
+                loginBtn.disabled = false;
+                loading.style.display = "none";
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById("alertContainer");
+            const alertClass = type === "error" ? "alert-error" : "alert-success";
+            alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+        }
+
+        // Redirigir si ya está logeado
+        window.addEventListener("load", () => {
+            const user = localStorage.getItem("user");
+            if (user) {
+                window.location.href = "dashboard.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+</body>
+
+</html>

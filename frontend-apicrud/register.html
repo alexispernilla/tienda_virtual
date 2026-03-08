@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Registro - Tienda Sistema</title>
+
+    <!-- Custom fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h1 {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .register-header p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            border-radius: 5px;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .strength-weak {
+            color: #d32f2f;
+        }
+
+        .strength-medium {
+            color: #f57c00;
+        }
+
+        .strength-strong {
+            color: #388e3c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>🛒 Tienda</h1>
+            <p>Crear Nueva Cuenta</p>
+        </div>
+
+        <form id="registerForm">
+            <div id="alertContainer"></div>
+
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario" placeholder="Elige un usuario único" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rol">Rol (Tipo de usuario)</label>
+                <select id="rol" name="rol" required>
+                    <option value="">Selecciona un rol</option>
+                    <option value="vendedor">Vendedor</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" placeholder="Mínimo 6 caracteres" required>
+                <div id="passwordStrength" class="password-strength"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmarContrasena">Confirmar Contraseña</label>
+                <input type="password" id="confirmarContrasena" name="confirmarContrasena" placeholder="Repite tu contraseña" required>
+            </div>
+
+            <button type="submit" class="register-btn" id="registerBtn">Crear Cuenta</button>
+
+            <div class="loading" id="loading">
+                <div class="spinner-border text-primary" role="status" style="width: 20px; height: 20px; margin: 10px auto;">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+
+            <div class="login-link">
+                ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = "http://localhost:3000/api";
+
+        // Verificar fortaleza de contraseña
+        document.getElementById("contrasena").addEventListener("input", (e) => {
+            const password = e.target.value;
+            const strengthDiv = document.getElementById("passwordStrength");
+
+            if (password.length === 0) {
+                strengthDiv.innerHTML = "";
+            } else if (password.length < 6) {
+                strengthDiv.innerHTML = "<span class='strength-weak'>❌ Muy débil (mínimo 6 caracteres)</span>";
+            } else if (password.length < 10) {
+                strengthDiv.innerHTML = "<span class='strength-medium'>⚠️ Contraseña media</span>";
+            } else {
+                strengthDiv.innerHTML = "<span class='strength-strong'>✅ Contraseña fuerte</span>";
+            }
+        });
+
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const usuario = document.getElementById("usuario").value.trim();
+            const rol = document.getElementById("rol").value;
+            const contrasena = document.getElementById("contrasena").value;
+            const confirmarContrasena = document.getElementById("confirmarContrasena").value;
+            const alertContainer = document.getElementById("alertContainer");
+            const registerBtn = document.getElementById("registerBtn");
+            const loading = document.getElementById("loading");
+
+            // Validaciones
+            if (!usuario || !rol || !contrasena || !confirmarContrasena) {
+                showAlert("Por favor completa todos los campos", "error");
+                return;
+            }
+
+            if (usuario.length < 3) {
+                showAlert("El usuario debe tener al menos 3 caracteres", "error");
+                return;
+            }
+
+            if (contrasena.length < 6) {
+                showAlert("La contraseña debe tener al menos 6 caracteres", "error");
+                return;
+            }
+
+            if (contrasena !== confirmarContrasena) {
+                showAlert("Las contraseñas no coinciden", "error");
+                return;
+            }
+
+            try {
+                registerBtn.disabled = true;
+                loading.style.display = "block";
+
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        usuario,
+                        contrasena,
+                        confirmarContrasena,
+                        rol,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAlert("¡Cuenta creada exitosamente! Redirigiendo al login...", "success");
+
+                    // Redirigir al login después de 2 segundos
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 2000);
+                } else {
+                    showAlert(data.message || "Error al crear la cuenta", "error");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                showAlert("Error de conexión. Verifica que el servidor esté activo", "error");
+            } finally {
+                registerBtn.disabled = false;
+                loading.style.display = "none";
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById("alertContainer");
+            const alertClass = type === "error" ? "alert-error" : "alert-success";
+            alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+        }
+
+        // Redirigir si ya está logeado
+        window.addEventListener("load", () => {
+            const user = localStorage.getItem("user");
+            if (user) {
+                window.location.href = "dashboard.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
